@@ -1,3 +1,0 @@
-basic_test 1 0
----
-basic_test
