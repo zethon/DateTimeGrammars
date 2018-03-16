@@ -1,3 +1,5 @@
+#define BOOST_TEST_MAIN
+
 #include "DateTimeGrammars.hpp"
 
 #include <boost/test/unit_test.hpp>
