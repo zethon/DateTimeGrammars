@@ -1,0 +1,26 @@
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources: 
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+    - os: osx
+      osx_image: xcode8.3
+
+script:
+  - cmake . -DBoost_USE_STATIC_LIBS=ON -DBUILD_TESTS=ON
+  - cmake --build . -- -j3
+  - ctest -j3
+
+notifactions:
+  email:
+    recipients:
+      - aclaure@gmail.com
+    on_suucess: never
+    on_failre: always
