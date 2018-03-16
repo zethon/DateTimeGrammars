@@ -1,0 +1,8 @@
+/Users/aclaure/src/DateTimeGrammars/build/CMakeFiles/rebuild_cache.dir
+/Users/aclaure/src/DateTimeGrammars/build/CMakeFiles/edit_cache.dir
+/Users/aclaure/src/DateTimeGrammars/build/CMakeFiles/test.dir
+/Users/aclaure/src/DateTimeGrammars/build/tests/CMakeFiles/rebuild_cache.dir
+/Users/aclaure/src/DateTimeGrammars/build/tests/CMakeFiles/edit_cache.dir
+/Users/aclaure/src/DateTimeGrammars/build/tests/CMakeFiles/test.dir
+/Users/aclaure/src/DateTimeGrammars/build/tests/CMakeFiles/basic_test.dir
+/Users/aclaure/src/DateTimeGrammars/build/tests/CMakeFiles/basic_test_autogen.dir
