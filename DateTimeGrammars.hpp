@@ -5,6 +5,9 @@
 
 #include <boost/spirit/include/qi.hpp>
 
+namespace bsq = boost::spirit::qi;
+namespace bph = boost::phoenix;
+
 namespace DateTimeGrammars
 {
 
@@ -14,6 +17,12 @@ bool isEven(unsigned int x)
     return (x % 2) == 0;
 }
 
+// template<typename Iterator>
+// struct EpochGrammar
+//     : bsq::grammar<Iterator, typename Header<Iterator>::Type() >
+// {
+
+// };
 
 }
 
