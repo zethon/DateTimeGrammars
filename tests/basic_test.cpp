@@ -53,37 +53,36 @@ BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, yea
     std::string::const_iterator begin = datestring.begin();
     std::string::const_iterator end = datestring.end();
 
-    std::tuple<unsigned int, unsigned int, unsigned int> tp;
-    bool didParse = boost::spirit::qi::parse(begin, end, parser, tp);
+    QDate qdate;
+    bool didParse = boost::spirit::qi::parse(begin, end, parser, qdate);
 
     BOOST_REQUIRE(didParse);
     BOOST_REQUIRE((begin == end));
-    BOOST_REQUIRE((std::get<0>(tp) == year));
-    BOOST_REQUIRE((std::get<1>(tp) == month));
-    BOOST_REQUIRE((std::get<2>(tp) == day));
-
-    std::cout << "TUPLE: " << tp << std::endl;
-    std::cout << "DONE\n";     
+    BOOST_REQUIRE(qdate.isValid());
+    BOOST_REQUIRE(qdate.year() == year);
+    BOOST_REQUIRE(qdate.month() == month);
+    BOOST_REQUIRE(qdate.day() == day);
 }
 
-BOOST_AUTO_TEST_CASE(foo_test)
+
+std::string badDates[] = 
 {
-    using string_it = std::string::const_iterator;
-    const DateParser<string_it> parser;
+    "2018-19-19",
+    "2018-99-99",
+    "2018-12-0",
+    "2018-0-0"
+};
 
-    std::string date1 = "2018-12-11";
-    std::string::const_iterator begin = date1.begin();
-    std::string::const_iterator end = date1.end();
+BOOST_DATA_TEST_CASE(testBadDates, data::make(badDates), datestring)
+{
+    // using string_it = std::string::const_iterator;
+    // const DateParser<string_it> parser;
 
-    std::tuple<unsigned int, unsigned int, unsigned int> tp;
-    
-    bool didParse = boost::spirit::qi::parse(begin, end, parser, tp);
+    // std::string::const_iterator begin = datestring.begin();
+    // std::string::const_iterator end = datestring.end();
 
-    // BOOST_REQUIRE(didParse);
-    // BOOST_REQUIRE((begin == end));
-
-    std::cout << "TUPLE: " << tp << std::endl;
-    std::cout << "DONE\n"; 
+    // bool didParse = boost::spirit::qi::parse(begin, end, parser);
+    // BOOST_REQUIRE(!didParse);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
