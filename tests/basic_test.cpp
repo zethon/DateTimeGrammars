@@ -27,12 +27,6 @@ std::ostream & operator<<(std::ostream & out, const std::tuple<int, int, int> ar
 
 BOOST_AUTO_TEST_SUITE(Basic)
 
-BOOST_AUTO_TEST_CASE(is_even_test)
-{
-    BOOST_CHECK(isEven(2));
-    BOOST_CHECK(!isEven(3));
-}
-
 std::tuple<std::string, unsigned int, unsigned int, unsigned int> dateOnlyGoodData[] = 
 {
     std::tuple<std::string, unsigned int, unsigned int, unsigned int>
@@ -42,7 +36,15 @@ std::tuple<std::string, unsigned int, unsigned int, unsigned int> dateOnlyGoodDa
     std::tuple<std::string, unsigned int, unsigned int, unsigned int>
     {
         "1969-07-20", 1969, 7, 20
-    }    
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "2018/12/11", 2018, 12, 11
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "1969/07/20", 1969, 7, 20
+    },
 };
 
 BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, year, month, day)
@@ -64,7 +66,6 @@ BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, yea
     BOOST_REQUIRE(qdate.day() == day);
 }
 
-
 std::string badDates[] = 
 {
     "2018-19-19",
@@ -75,14 +76,14 @@ std::string badDates[] =
 
 BOOST_DATA_TEST_CASE(testBadDates, data::make(badDates), datestring)
 {
-    // using string_it = std::string::const_iterator;
-    // const DateParser<string_it> parser;
+    using string_it = std::string::const_iterator;
+    const DateParser<string_it> parser;
 
-    // std::string::const_iterator begin = datestring.begin();
-    // std::string::const_iterator end = datestring.end();
+    std::string::const_iterator begin = datestring.begin();
+    std::string::const_iterator end = datestring.end();
 
-    // bool didParse = boost::spirit::qi::parse(begin, end, parser);
-    // BOOST_REQUIRE(!didParse);
+    bool didParse = boost::spirit::qi::parse(begin, end, parser);
+    BOOST_REQUIRE(!didParse);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

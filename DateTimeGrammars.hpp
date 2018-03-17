@@ -23,7 +23,7 @@ template<typename Iterator>
 struct DateParser : bsq::grammar<Iterator, QDate()>
 {
     using UIntTriplet = std::tuple<unsigned int, unsigned int, unsigned int>;
-    
+
     DateParser()
         : DateParser::base_type(_query)
     {
@@ -35,9 +35,9 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
         _yearnum = (digit4 | digit2);
 
         _date = _yearnum
-            >> '-'
+            >> (bsq::lit('-') | bsq::lit('/'))
             >> _monthnum
-            >> '-'
+            >> (bsq::lit('-') | bsq::lit('/'))
             >> _daynum;
 
         _query = _date[
