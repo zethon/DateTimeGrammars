@@ -28,8 +28,11 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
         using boost::phoenix::at_c;
         using boost::spirit::qi::_1;
         using boost::spirit::qi::_val;
+        using boost::phoenix::construct;
+        using boost::spirit::qi::eps;
 
-        _start = _date[at_c<2>(_val), at_c<1>(_val), at_c<0>(_val)];
+        // _start = _date[at_c<2>(_val), at_c<1>(_val), at_c<0>(_val)];
+        _start = eps[_val=construct<QDate>(at_c<2>(_val), at_c<1>(_val), at_c<0>(_val))];
         
         _date = bsq::uint_parser<unsigned int, 10, 2, 4>()
             >> ('-' | '/')
