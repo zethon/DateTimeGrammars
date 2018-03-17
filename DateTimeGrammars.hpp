@@ -19,30 +19,57 @@ bool isEven(unsigned int x)
     return (x % 2) == 0;
 }
 
+using UIntTriplet = std::tuple<unsigned int, unsigned int, unsigned int>;
+
 template<typename Iterator>
-struct DateParser : bsq::grammar<Iterator, QDate()>
+struct DateParser : bsq::grammar<Iterator, UIntTriplet()>
 {
     DateParser()
-        : DateParser::base_type(_start)
+        : DateParser::base_type(_date)
     {
-        using boost::phoenix::at_c;
-        using boost::spirit::qi::_1;
-        using boost::spirit::qi::_val;
-        using boost::phoenix::construct;
-        using boost::spirit::qi::eps;
+        namespace bsq = boost::spirit::qi;
+        namespace bsp = boost::phoenix;
 
-        // _start = _date[at_c<2>(_val), at_c<1>(_val), at_c<0>(_val)];
-        _start = eps[_val=construct<QDate>(at_c<2>(_val), at_c<1>(_val), at_c<0>(_val))];
-        
+        _daynum = digit2;// >> bsq::eps(bsq::_val <= 31);
+        _monthnum = digit2; // >> bsq::eps(bsq::_val <= 11);
+        _yearnum = (digit2 | digit4);
+
+        // _date = _yearnum //[bsq::labels::_a  = bsq::_1]
+        //     >> '-'
+        //     >> _monthnum //[bsq::labels::_b  = _1]
+        //     >> '-'
+        //     >> _daynum //[bsq::labels::_c  = _1]
+        //     ;
+
         _date = bsq::uint_parser<unsigned int, 10, 2, 4>()
-            >> ('-' | '/')
-            >> bsq::uint_parser<unsigned int, 10, 1, 2>()
-            >> ('-' | '/')
-            >> bsq::uint_parser<unsigned int, 10, 1, 2>();
+            >> '-'
+            >> bsq::uint_parser<unsigned int>()
+            >> '-'
+            >> bsq::uint_parser<unsigned int>();
+
+        // _query = _date[_val = ]
+
+
+        // // _start = _date[at_c<2>(_val), at_c<1>(_val), at_c<0>(_val)];
+        // _start = eps[_val=construct<QDate>(at_c<2>(_val), at_c<1>(_val), at_c<0>(_val))];
+        
+        // _date = 
+        //         bsq::uint_parser<unsigned int, 10, 2, 4>()[labels::_a = _1]
+        //      >> ('-' | '/')
+        //      >> bsq::uint_parser<unsigned int, 10, 1, 2>()[labels::_b = _1]
+        //      >> ('-' | '/')
+        //      >> bsq::uint_parser<unsigned int, 10, 1, 2>()[labels::_c = _1];
     }
 
-    boost::spirit::qi::rule<Iterator, std::tuple<int, int, int>()> _date;
-    boost::spirit::qi::rule<Iterator, QDate() > _start;
+    bsq::uint_parser<unsigned int, 10, 4, 4> digit4;
+    bsq::uint_parser<unsigned int, 10, 1, 2> digit2;
+
+    boost::spirit::qi::rule<Iterator, unsigned int()> _daynum;
+    boost::spirit::qi::rule<Iterator, unsigned int()> _monthnum;
+    boost::spirit::qi::rule<Iterator, unsigned int()> _yearnum;
+
+    boost::spirit::qi::rule<Iterator, UIntTriplet()> _date;
+    // boost::spirit::qi::rule<Iterator, QDate() > _query;
 };
 
 }
