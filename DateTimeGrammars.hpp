@@ -32,7 +32,7 @@ struct DateParser : bsq::grammar<Iterator, UIntTriplet()>
 
         _daynum = digit2;// >> bsq::eps(bsq::_val <= 31);
         _monthnum = digit2; // >> bsq::eps(bsq::_val <= 11);
-        _yearnum = (digit2 | digit4);
+        _yearnum = (digit4 | digit2);
 
         // _date = _yearnum //[bsq::labels::_a  = bsq::_1]
         //     >> '-'
@@ -41,7 +41,7 @@ struct DateParser : bsq::grammar<Iterator, UIntTriplet()>
         //     >> _daynum //[bsq::labels::_c  = _1]
         //     ;
 
-        _date = bsq::uint_parser<unsigned int, 10, 2, 4>()
+        _date = _yearnum
             >> '-'
             >> bsq::uint_parser<unsigned int>()
             >> '-'
