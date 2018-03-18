@@ -1,6 +1,10 @@
 # Notes
 
-## Restricting numerical values
+These are notes to things I figured out while writing this project.
+
+## `Boost::Spirit::Qi` Related notes
+
+### Restricting numerical values in a rule
 
 This seems to be a way to restrict values even if they parse. For example, the `_daynum` below will only parse if the value is less than 31
 
@@ -8,7 +12,7 @@ This seems to be a way to restrict values even if they parse. For example, the `
     ...
     _daynum = bsq::uint_parser<int, 10, 1, 2>() >> bsq::eps(bsq::_val <= 31);
 
-## Using a Constructor
+### Using a Constructor in a grammar
 
 Here we are able to create a `QDate` object using the following constructor: `QDate(int y, int m, int d)`
 
@@ -36,7 +40,7 @@ The `_yearnum` and other rules are just `uint_parser` rules putting restrictions
 
 The thing to note here is that `bsq::_1` referenced in the `_query` definition refers to the first value return from `_date`, which is in the `UIntTriplet` which is defined as: `using UIntTriplet = std::tuple<unsigned int, unsigned int, unsigned int>;`. We then use the Phoenix operator `at_c` to pick out the the individual values to pass to the `QDate` contructor via `bph::construct`.
 
-## Adding Functions that Can be Called "In" a Rule
+### Adding Functions that Can be Called in a Rule
 
 After constructing our `QDate` object, we want to make sure the date is valid. For example, our Spirit parser will allow `2018-02-31` to parse but that is obviously an invalid date. Luckily `QDate` has a method called `isValid()` that tells us exactly what we need to do.
 

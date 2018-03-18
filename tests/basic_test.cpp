@@ -3,6 +3,8 @@
 #include "DateTimeGrammars.hpp"
 
 #include <QDateTime>
+#include <QDebug>
+
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/fusion/adapted/std_tuple.hpp> 
@@ -29,6 +31,7 @@ BOOST_AUTO_TEST_SUITE(Basic)
 
 std::tuple<std::string, unsigned int, unsigned int, unsigned int> dateOnlyGoodData[] = 
 {
+    // YYYY-MM-DD
     std::tuple<std::string, unsigned int, unsigned int, unsigned int>
     {
         "2018-12-11", 2018, 12, 11
@@ -45,6 +48,16 @@ std::tuple<std::string, unsigned int, unsigned int, unsigned int> dateOnlyGoodDa
     {
         "1969/07/20", 1969, 7, 20
     },
+
+    // DD-MM-YYYY
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "17/03/2004", 2004, 3, 17
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "29/2/1976", 1976, 2, 29
+    },    
 };
 
 BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, year, month, day)
@@ -57,6 +70,9 @@ BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, yea
 
     QDate qdate;
     bool didParse = boost::spirit::qi::parse(begin, end, parser, qdate);
+
+    qDebug() << "DATE: (" << qdate << ")";
+    std::cout << "[" << std::string(begin, end) << "]" << std::endl;
 
     BOOST_REQUIRE(didParse);
     BOOST_REQUIRE((begin == end));
