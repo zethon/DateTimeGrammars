@@ -13,11 +13,16 @@ namespace bph = boost::phoenix;
 namespace DateTimeGrammars
 {
 
-// stupid test function to build unit tests
-bool isEven(unsigned int x)
+struct QDate_isValid_impl
 {
-    return (x % 2) == 0;
-}
+    typedef bool result_type;
+
+    bool operator()(const QDate& date)
+        const
+    {
+        return date.isValid();
+    }
+};
 
 template<typename Iterator>
 struct DateParser : bsq::grammar<Iterator, QDate()>
@@ -45,7 +50,11 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
                     bph::at_c<0>(bsq::_1), 
                     bph::at_c<1>(bsq::_1), 
                     bph::at_c<2>(bsq::_1)
-                )
+                ),
+            bph::if_(!is_valid(bsq::_val))
+                [
+                   bsq::_pass = false
+                ]
             ];
     }
 
@@ -58,7 +67,12 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
 
     boost::spirit::qi::rule<Iterator, UIntTriplet()> _date;
     boost::spirit::qi::rule<Iterator, QDate() > _query;
+
+    static const boost::phoenix::function<QDate_isValid_impl> is_valid;
 };
+
+template <typename Iterator>
+const boost::phoenix::function<QDate_isValid_impl> DateParser<Iterator>::is_valid;
 
 }
 
