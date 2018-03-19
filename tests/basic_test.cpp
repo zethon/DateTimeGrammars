@@ -57,7 +57,56 @@ std::tuple<std::string, unsigned int, unsigned int, unsigned int> dateOnlyGoodDa
     std::tuple<std::string, unsigned int, unsigned int, unsigned int>
     {
         "29/2/1976", 1976, 2, 29
-    },    
+    },
+
+    // MON DD,YYYY
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "feb 16, 2018", 2018, 2, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "feb 16,2018", 2018, 2, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "feb 16 2018", 2018, 2, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "jUN 16,2018", 2018, 6, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "Dec 16 2018", 2018, 12, 16
+    },
+
+
+    // MONTH DD,YYYY
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "february 16, 2018", 2018, 2, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "february 16,2018", 2018, 2, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "february 16 2018", 2018, 2, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "december 16, 2018", 2018, 12, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "MARCH 16,2018", 2018, 3, 16
+    },
+    std::tuple<std::string, unsigned int, unsigned int, unsigned int>
+    {
+        "APril 16 2018", 2018, 4, 16
+    },
 };
 
 BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, year, month, day)
@@ -70,9 +119,6 @@ BOOST_DATA_TEST_CASE(dateOnlyTest, data::make(dateOnlyGoodData), datestring, yea
 
     QDate qdate;
     bool didParse = boost::spirit::qi::parse(begin, end, parser, qdate);
-
-    qDebug() << "DATE: (" << qdate << ")";
-    std::cout << "[" << std::string(begin, end) << "]" << std::endl;
 
     BOOST_REQUIRE(didParse);
     BOOST_REQUIRE((begin == end));
@@ -97,6 +143,8 @@ std::string badDates[] =
     "2001-12-32",
     "cat",
     "",
+    "feb 31, 2014",
+    "jun 31, 1999"
 };
 
 BOOST_DATA_TEST_CASE(testBadDates, data::make(badDates), datestring)

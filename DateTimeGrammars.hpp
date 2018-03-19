@@ -35,6 +35,16 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
     {
         namespace bsq = boost::spirit::qi;
         namespace bph = boost::phoenix;
+
+        months.add
+            ("january",1) ("february",2) ("march",3) ("april",4)
+            ("may",5) ("june",6) ("july",7) ("august",8)
+            ("september",9) ("october",10) ("november",11) ("december",12);
+
+        monthsabbr.add
+            ("jan", 1) ("feb", 2) ("mar", 3) ("apr", 4)
+            ("may", 5) ("jun", 6) ("jul", 7) ("aug", 8)
+            ("sep", 9) ("oct", 10) ("nov", 11) ("dec", 12);
         
         _daynum = digit2 >> bsq::eps(1 <= bsq::_val && bsq::_val <= 31);
         _monthnum = digit2 >> bsq::eps(1 <= bsq::_val && bsq::_val <= 12);
@@ -76,7 +86,25 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
                 ]
             ];
 
-        _query = (_qYMD | _qDMY);
+        _monMDY = bsq::no_case[(months | monthsabbr)]
+            >> bsq::lit(' ')
+            >> _daynum
+            >> (bsq::lit(", ") | bsq::lit(',') | bsq::lit(' '))
+            >> _yearnum;
+
+        _qmonMDY = _monMDY[
+            bsq::_val = bph::construct<QDate>(
+                bph::at_c<2>(bsq::_1),
+                bph::at_c<0>(bsq::_1),
+                bph::at_c<1>(bsq::_1)
+                ),
+            bph::if_(!is_valid(bsq::_val))
+                [
+                    bsq::_pass = false
+                ]
+            ];
+
+        _query = (_qmonMDY | _qYMD | _qDMY);
     }
 
     bsq::uint_parser<unsigned int, 10, 4, 4> digit4;
@@ -87,12 +115,18 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
     boost::spirit::qi::rule<Iterator, unsigned int()> _yearnum;
 
     boost::spirit::qi::rule<Iterator, UIntTriplet()> _dateYMD;
-    boost::spirit::qi::rule<Iterator, QDate() > _qYMD;
+    boost::spirit::qi::rule<Iterator, QDate()> _qYMD;
 
     boost::spirit::qi::rule<Iterator, UIntTriplet()> _dateDMY;
-    boost::spirit::qi::rule<Iterator, QDate() > _qDMY;
+    boost::spirit::qi::rule<Iterator, QDate()> _qDMY;
+
+    boost::spirit::qi::rule<Iterator, UIntTriplet()> _monMDY;
+    boost::spirit::qi::rule<Iterator, QDate()> _qmonMDY;
     
-    boost::spirit::qi::rule<Iterator, QDate() > _query;
+    boost::spirit::qi::rule<Iterator, QDate()> _query;
+
+    boost::spirit::qi::symbols<char, int>  months;
+    boost::spirit::qi::symbols<char, int>  monthsabbr;
 
     static const boost::phoenix::function<QDate_isValid_impl> is_valid;
 };
