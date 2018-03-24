@@ -68,10 +68,7 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
                     bph::at_c<1>(bsq::_1), 
                     bph::at_c<0>(bsq::_1)
                 ),
-            bph::if_(!is_valid(bsq::_val))
-                [
-                    bsq::_pass = false
-                ]
+                bsq::_pass = is_valid(bsq::_val)
             ];
 
         _qYMD = _dateYMD[
@@ -80,10 +77,7 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
                     bph::at_c<1>(bsq::_1), 
                     bph::at_c<2>(bsq::_1)
                 ),
-            bph::if_(!is_valid(bsq::_val))
-                [
-                   bsq::_pass = false
-                ]
+                bsq::_pass = is_valid(bsq::_val)
             ];
 
         _monMDY = bsq::no_case[(months | monthsabbr)]
@@ -98,10 +92,7 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
                 bph::at_c<0>(bsq::_1),
                 bph::at_c<1>(bsq::_1)
                 ),
-            bph::if_(!is_valid(bsq::_val))
-                [
-                    bsq::_pass = false
-                ]
+             bsq::_pass = is_valid(bsq::_val)
             ];
 
         _query = (_qmonMDY | _qYMD | _qDMY);
