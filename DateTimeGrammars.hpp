@@ -25,6 +25,17 @@ struct QDate_isValid_impl
     }
 };
 
+struct QTime_isValid_impl
+{
+    typedef bool result_type;
+
+    bool operator()(const QTime& time)
+        const
+    {
+        return time.isValid();
+    }
+};
+
 template<typename Iterator>
 struct DateParser : bsq::grammar<Iterator, QDate()>
 {
@@ -122,9 +133,34 @@ struct DateParser : bsq::grammar<Iterator, QDate()>
     static const boost::phoenix::function<QDate_isValid_impl> is_valid;
 };
 
+template<typename Iterator>
+struct TimeParser : bsq::grammar<Iterator, QTime()>
+{
+    using UIntPair = std::tuple<unsigned int, unsigned int>;
+
+    TimeParser()
+        : TimeParser::base_type(_query)
+    {
+        namespace bsq = boost::spirit::qi;
+        namespace bph = boost::phoenix;
+
+        _hourdigit = digit2 >> bsq::eps(0 <= bsq::_val && bsq::_val <= 24);
+        _minutedigit = digit2 >> bsq::eps(0 <= bsq::_val && bsq::_val <= 59);
+    }
+
+    bsq::uint_parser<unsigned int, 10, 1, 2> _hourdigit;
+    bsq::uint_parser<unsigned int, 10, 1, 2> _minutedigit;
+
+    boost::spirit::qi::rule<Iterator, QDate()> _query;
+
+    static const boost::phoenix::function<QTime_isValid_impl> is_valid;
+};
+
 template <typename Iterator>
 const boost::phoenix::function<QDate_isValid_impl> DateParser<Iterator>::is_valid;
 
+template <typename Iterator>
+const boost::phoenix::function<QTime_isValid_impl> TimeParser<Iterator>::is_valid;
 }
 
 #endif // DATE_TIME_GRAMMAR_HPP
