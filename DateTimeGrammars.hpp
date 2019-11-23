@@ -150,6 +150,7 @@ struct TimeParser : bsq::grammar<Iterator, QTime()>
 
     bsq::uint_parser<unsigned int, 10, 1, 2> _hourdigit;
     bsq::uint_parser<unsigned int, 10, 1, 2> _minutedigit;
+    bsq::uint_parser<unsigned int, 10, 1, 2> digit2;
 
     boost::spirit::qi::rule<Iterator, QDate()> _query;
 

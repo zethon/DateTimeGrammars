@@ -8,6 +8,12 @@ before_install:
   - sudo ./bootstrap.sh --prefix=/usr/local --with-libraries=test
   - sudo ./b2 -d0 install 
   - cd ..
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew update
+      brew install qt5
+      brew link --force qt5
+    fi
 
 matrix:
   include:
@@ -33,7 +39,14 @@ matrix:
       compiler: clang
 
 script:
-  - cmake . -DBoost_USE_STATIC_LIBS=ON -DBUILD_TESTS=ON
+  - mkdir build
+  - cd build
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      source /opt/qt512/bin/qt512-env.sh;
+    fi
+
+  - cmake .. -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DBoost_USE_STATIC_LIBS=ON -DBUILD_TESTS=ON
   - cmake --build . -- -j3
   - ctest -j3
 
