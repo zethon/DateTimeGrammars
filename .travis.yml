@@ -22,7 +22,7 @@ matrix:
             - gcc-7
             - g++-7
             - build-essential
-            - qt512-meta-minimal
+            - qt512-meta-full
             - libgl1-mesa-dev
       env: 
         - CC_COMPILER=gcc-7
