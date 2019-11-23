@@ -12,15 +12,25 @@ before_install:
 matrix:
   include:
     - os: linux
+      dist: bionic
       addons:
         apt:
           sources: 
             - ubuntu-toolchain-r-test
+            - sourceline: "ppa:beineri/opt-qt-5.12.3-bionic"
           packages:
-            - g++-6
-      env: MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+            - gcc-7
+            - g++-7
+            - build-essential
+            - qt512-meta-minimal
+            - libgl1-mesa-dev
+      env: 
+        - CC_COMPILER=gcc-7
+        - CXX_COMPILER=g++-7
+        - CONFIG=RelWithDebInfo
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode10
+      compiler: clang
 
 script:
   - cmake . -DBoost_USE_STATIC_LIBS=ON -DBUILD_TESTS=ON
@@ -32,4 +42,4 @@ notifactions:
     recipients:
       - aclaure@gmail.com
     on_suucess: never
-    on_failre: always
+    on_failure: always
